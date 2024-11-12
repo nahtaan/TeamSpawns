@@ -1,0 +1,8 @@
+name: TeamSpawns
+version: '1.0'
+main: dev.nahtan.teamSpawns.TeamSpawns
+api-version: '1.21'
+prefix: TeamSpawns
+authors: [ _nahtan. ]
+description: A simple plugin that forces a spawnpoint based on a player's chosen team.
+website: https://nahtan.dev

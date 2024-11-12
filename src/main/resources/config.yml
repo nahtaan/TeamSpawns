@@ -1,0 +1,8 @@
+teams:
+  1:
+    name: 'Default'
+    description: 'The default team is the best team of them all!'
+    colour: '#ffffff'
+    x: 0
+    y: 69
+    z: 0
