@@ -2,7 +2,9 @@ package dev.nahtan.teamSpawns;
 
 import dev.nahtan.teamSpawns.data.TeamManager;
 import dev.nahtan.teamSpawns.data.TeamSelector;
+import dev.nahtan.teamSpawns.listeners.DismountListener;
 import dev.nahtan.teamSpawns.listeners.JoinListener;
+import dev.nahtan.teamSpawns.listeners.PlayerRespawnListener;
 import dev.nahtan.teamSpawns.world.VoidBiomeProvider;
 import dev.nahtan.teamSpawns.world.VoidChunkGenerator;
 import net.kyori.adventure.util.TriState;
@@ -28,6 +30,8 @@ public final class TeamSpawns extends JavaPlugin {
         manager = new TeamManager(this);
         selector = new TeamSelector(this);
         getServer().getPluginManager().registerEvents(new JoinListener(this), this);
+        getServer().getPluginManager().registerEvents(new DismountListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerRespawnListener(this), this);
         // generate void world for selecting teams
         genVoidWorld();
         LOGGER.info("Finished loading!");
@@ -61,6 +65,7 @@ public final class TeamSpawns extends JavaPlugin {
         world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, Boolean.FALSE);
         world.setGameRule(GameRule.DO_INSOMNIA, Boolean.FALSE);
         world.setGameRule(GameRule.DO_WEATHER_CYCLE, Boolean.FALSE);
+        // Todo: remove dragon and portal blocks
     }
 
     @Override
