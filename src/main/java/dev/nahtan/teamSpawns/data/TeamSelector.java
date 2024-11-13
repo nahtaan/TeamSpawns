@@ -11,7 +11,7 @@ import java.util.*;
 public class TeamSelector {
     private final TeamSpawns plugin;
 
-    Map<UUID, PlayerInfo> currentPlayers = new HashMap<>();
+    Map<String, PlayerInfo> currentPlayers = new HashMap<>();
 
     public TeamSelector(TeamSpawns plugin) {
         this.plugin = plugin;
@@ -53,19 +53,38 @@ public class TeamSelector {
         player.showEntity(plugin, stand);
         stand.addPassenger(player);
 
+        currentPlayers.put(player.getUniqueId().toString(), new PlayerInfo(player, stand));
+
+    }
+
+    public PlayerInfo getPlayerInfo(Player player) {
+        return currentPlayers.get(player.getUniqueId().toString());
     }
 
     public boolean isPlayerSelecting(Player player) {
-        return currentPlayers.containsKey(player.getUniqueId());
+        return currentPlayers.containsKey(player.getUniqueId().toString());
     }
 
-    private static class PlayerInfo {
+    public static class PlayerInfo {
         private Player player;
         private ArmorStand stand;
+        private int teamIndex = 0;
 
         public PlayerInfo(Player player, ArmorStand stand) {
             this.player = player;
             this.stand = stand;
+        }
+
+        public Player getPlayer() {
+            return player;
+        }
+
+        public ArmorStand getStand() {
+            return stand;
+        }
+
+        public int getTeamIndex() {
+            return teamIndex;
         }
     }
 }

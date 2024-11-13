@@ -9,6 +9,9 @@ import dev.nahtan.teamSpawns.world.VoidBiomeProvider;
 import dev.nahtan.teamSpawns.world.VoidChunkGenerator;
 import net.kyori.adventure.util.TriState;
 import org.bukkit.*;
+import org.bukkit.block.data.type.SculkSensor;
+import org.bukkit.boss.DragonBattle;
+import org.bukkit.entity.EnderDragon;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
@@ -49,7 +52,7 @@ public final class TeamSpawns extends JavaPlugin {
         creator.keepSpawnLoaded(TriState.FALSE);
         creator.biomeProvider(new VoidBiomeProvider());
         creator.generator(new VoidChunkGenerator());
-        creator.environment(World.Environment.NORMAL);
+        creator.environment(World.Environment.THE_END);
         world = creator.createWorld();
         setupVoidWorld(world);
         return world;
@@ -65,7 +68,17 @@ public final class TeamSpawns extends JavaPlugin {
         world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, Boolean.FALSE);
         world.setGameRule(GameRule.DO_INSOMNIA, Boolean.FALSE);
         world.setGameRule(GameRule.DO_WEATHER_CYCLE, Boolean.FALSE);
-        // Todo: remove dragon and portal blocks
+
+        // remove dragon fight
+        DragonBattle battle = world.getEnderDragonBattle();
+        if(battle == null) return;
+        EnderDragon dragon = battle.getEnderDragon();
+        if(dragon == null) return;
+        dragon.setHealth(0D);
+        Location podiumLOC = dragon.getPodium();
+        Location topLeftLOC = podiumLOC.add(5, 5, 5);
+        Location bottomRightLOC = podiumLOC.add(-5, -5, -5);
+
     }
 
     @Override

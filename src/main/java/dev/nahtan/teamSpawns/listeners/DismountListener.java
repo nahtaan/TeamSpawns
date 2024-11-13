@@ -18,7 +18,7 @@ public class DismountListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDismount(EntityDismountEvent event) {
         // ignore non-players
-        if(!(event.getDismounted() instanceof Player player)) return;
+        if(!(event.getEntity() instanceof Player player)) return;
         // cancel event if the player is selecting
         event.setCancelled(plugin.getTeamSelector().isPlayerSelecting(player));
     }
