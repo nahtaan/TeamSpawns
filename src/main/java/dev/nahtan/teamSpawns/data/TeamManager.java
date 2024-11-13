@@ -7,9 +7,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.awt.*;
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 public class TeamManager {
@@ -17,7 +18,7 @@ public class TeamManager {
 
     TeamSpawns plugin;
     // a mapping of team names to their associated team info
-    private final HashMap<String, TeamInfo> teamSpawns = new HashMap<>();
+    private final HashMap<String, TeamInfo> teams = new HashMap<>();
 
     public TeamManager(TeamSpawns plugin) {
         this.plugin = plugin;
@@ -29,7 +30,7 @@ public class TeamManager {
      * @return true - Success, false - Failure
      */
     public boolean loadTeamsFromConfig() {
-        teamSpawns.clear(); // allow for reloading
+        teams.clear(); // allow for reloading
         FileConfiguration config = plugin.getConfig();
         ConfigurationSection teamsSection = config.getConfigurationSection("teams");
         if(teamsSection == null) {
@@ -57,14 +58,14 @@ public class TeamManager {
                 continue;
             }
 
-            if(teamSpawns.containsKey(name)) {
+            if(teams.containsKey(name)) {
                 TeamSpawns.LOGGER.warning("A duplicate team name has been found: '" + name + "'. The second instance of this team will be ignored.");
                 continue;
             }
             TeamInfo info = new TeamInfo(name, description, colour, x, y, z, (float) yaw, (float) pitch, world);
-            teamSpawns.put(name, info);
+            teams.put(name, info);
         }
-        return !teamSpawns.isEmpty();
+        return !teams.isEmpty();
     }
 
     private boolean validateConfig(String key, String name, String description, String colour, String world) {
@@ -95,25 +96,41 @@ public class TeamManager {
         return valid;
     }
 
-    public String getTeamName(Player player) {
+    public String getTeamNameFromPlayer(Player player) {
         return player.getPersistentDataContainer().get(teamNameKey, PersistentDataType.STRING);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean doesTeamExist(String teamName) {
-        return teamSpawns.containsKey(teamName);
+        return teams.containsKey(teamName);
     }
 
     public Location getTeamSpawnLoc(String teamName) {
         if(!doesTeamExist(teamName)) {
             return null;
         }
-        TeamInfo info = teamSpawns.get(teamName);
+        TeamInfo info = teams.get(teamName);
         World world = Bukkit.getWorld(info.world);
         if(world == null) {
             TeamSpawns.LOGGER.severe("Could not find spawn world for team '" + info.name + "', world: '" + info.world + "'. Defaulting to first world that can be found.");
             world = Bukkit.getWorlds().getFirst();
         }
         return new Location(world, info.x, info.y, info.z, info.yaw, info.pitch);
+    }
+
+    public String getTeamColourCode(String teamName) {
+        if(!doesTeamExist(teamName)) {
+            return null;
+        }
+        return teams.get(teamName).colourCode;
+    }
+
+    public List<String[]> getAllTeamNamesAndDescription() {
+        List<String[]> teamInfo = new ArrayList<>();
+        for(TeamInfo team: teams.values()) {
+            teamInfo.add(new String[]{team.name, team.description});
+        }
+        return teamInfo;
     }
 
     private static class TeamInfo {
