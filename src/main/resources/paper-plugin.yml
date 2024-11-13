@@ -6,3 +6,9 @@ prefix: TeamSpawns
 authors: [ _nahtan. ]
 description: A simple plugin that forces a spawnpoint based on a player's chosen team.
 website: https://nahtan.dev
+dependencies:
+  server:
+    packetevents:
+      load: BEFORE
+      required: true
+      join-classpath: true
