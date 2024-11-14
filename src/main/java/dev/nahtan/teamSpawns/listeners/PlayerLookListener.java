@@ -38,7 +38,6 @@ public class PlayerLookListener implements PacketListener {
         float yaw = packet.getYaw();
         float pitch = packet.getPitch();
 
-
         final TeamSelector.PlayerInfo info = selector.getPlayerInfo(player);
         // left button
         if((yaw <= -31.5 && yaw >= -44) && (pitch <= 24 && pitch >= 10)) {
