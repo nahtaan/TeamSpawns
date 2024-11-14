@@ -1,13 +1,12 @@
 package dev.nahtan.teamSpawns.data;
 
 import dev.nahtan.teamSpawns.TeamSpawns;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Transformation;
@@ -62,13 +61,15 @@ public class TeamSelector {
         player.getInventory().clear();
         player.setGameMode(GameMode.ADVENTURE);
 
-        List<String[]> teamTexts = plugin.getTeamManager().getAllTeamNamesAndDescription();
+        List<String[]> teamTexts = plugin.getTeamManager().getAllTeamText();
 
         // Create name
         TextDisplay nameText = selectionWorld.spawn(standLOC.add(0, 2.5, 5), TextDisplay.class, display -> {
             display.setVisibleByDefault(false);
             display.setBillboard(Display.Billboard.FIXED);
-            display.text(MiniMessage.miniMessage().deserialize(teamTexts.getFirst()[0]));
+            Component text = Component.text(teamTexts.getFirst()[0])
+                    .color(TextColor.color(Integer.decode(teamTexts.getFirst()[2])));
+            display.text(text);
             display.setRotation(-180, 0);
         });
 
@@ -95,7 +96,7 @@ public class TeamSelector {
             itemDisplay.setGravity(false);
             itemDisplay.setInvulnerable(true);
             itemDisplay.setInvisible(true);
-            ItemStack helmet = TeamSpawns.getSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjdhYWNhZDE5M2UyMjI2OTcxZWQ5NTMwMmRiYTQzMzQzOGJlNDY0NGZiYWI1ZWJmODE4MDU0MDYxNjY3ZmJlMiJ9fX0=");
+            ItemStack helmet = TeamSpawns.getSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHBzOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2Y3YWFjYWQxOTNlMjIyNjk3MWVkOTUzMDJkYmE0MzM0MzhiZTQ2NDRmYmFiNWViZjgxODA1NDA2MTY2N2ZiZTIifX19");
             itemDisplay.setItemStack(helmet);
             itemDisplay.setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(), new Vector3f(2,2,2), new AxisAngle4f()));
             itemDisplay.setRotation(-36, 0);
@@ -107,7 +108,7 @@ public class TeamSelector {
             itemDisplay.setGravity(false);
             itemDisplay.setInvulnerable(true);
             itemDisplay.setInvisible(true);
-            ItemStack item = TeamSpawns.getSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDM0ZWYwNjM4NTM3MjIyYjIwZjQ4MDY5NGRhZGMwZjg1ZmJlMDc1OWQ1ODFhYTdmY2RmMmU0MzEzOTM3NzE1OCJ9fX0=");
+            ItemStack item = TeamSpawns.getSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHBzOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2QzNGVmMDYzODUzNzIyMmIyMGY0ODA2OTRkYWRjMGY4NWZiZTA3NTlkNTgxYWE3ZmNkZjJlNDMxMzkzNzcxNTgifX19");
             itemDisplay.setItemStack(item);
             itemDisplay.setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(), new Vector3f(2,2,2), new AxisAngle4f()));
             itemDisplay.setRotation(36, 0);
@@ -123,7 +124,7 @@ public class TeamSelector {
             itemDisplay.setInvulnerable(true);
             itemDisplay.setInvisible(true);
             itemDisplay.setGlowColorOverride(Color.fromBGR(0, 255, 0));
-            ItemStack item = TeamSpawns.getSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzIzNjE0YTQ5NzZlMTk0YzgwOGY0YjdiZDgxOWZlYTcxNzM2ZWRmYzY0MzgzODE1MTdmOGMxMzNjZWJhMjIxIn19fQ==");
+            ItemStack item = TeamSpawns.getSkull("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHBzOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzcyMzYxNGE0OTc2ZTE5NGM4MDhmNGI3YmQ4MTlmZWE3MTczNmVkZmM2NDM4MzgxNTE3ZjhjMTMzY2ViYTIyMSJ9fX0=");
             itemDisplay.setItemStack(item);
             itemDisplay.setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(), new Vector3f(1.5f,1.5f,1.5f), new AxisAngle4f()));
             itemDisplay.setRotation(0, 0);

@@ -125,10 +125,10 @@ public class TeamManager {
         return teams.get(teamName).colourCode;
     }
 
-    public List<String[]> getAllTeamNamesAndDescription() {
+    public List<String[]> getAllTeamText() {
         List<String[]> teamInfo = new ArrayList<>();
         for(TeamInfo team: teams.values()) {
-            teamInfo.add(new String[]{team.name, team.description});
+            teamInfo.add(new String[]{team.name, team.description, team.colourCode});
         }
         return teamInfo;
     }
