@@ -4,16 +4,21 @@ import dev.nahtan.teamSpawns.TeamSpawns;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Transformation;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
 
-import java.util.*;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TeamSelector {
     private final TeamSpawns plugin;
@@ -38,6 +43,9 @@ public class TeamSelector {
                 return;
             }
         }
+
+        // send welcome message to the player
+        player.sendMessage(MiniMessage.miniMessage().deserialize(plugin.getConfig().getString("first-join-format", "").replace("%player%", player.getName())));
 
         // make it so that the other players cannot see each other
         for(PlayerInfo info: currentPlayers.values()) {
@@ -138,8 +146,109 @@ public class TeamSelector {
         return currentPlayers.get(player.getUniqueId().toString());
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isPlayerSelecting(Player player) {
-        return currentPlayers.containsKey(player.getUniqueId().toString());
+        if(!currentPlayers.containsKey(player.getUniqueId().toString())) {
+            return false;
+        }
+        return !currentPlayers.get(player.getUniqueId().toString()).isDone();
+    }
+
+    public void makeSelection(Player player) {
+        // ignore if the player is unknown
+        if(!currentPlayers.containsKey(player.getUniqueId().toString())) return;
+        PlayerInfo info = currentPlayers.get(player.getUniqueId().toString());
+
+        // update done status
+        info.setDone();
+
+        // immediate effects
+        // play lightning effect
+        info.getConfirmButton().getScheduler().run(plugin, (task) -> {
+            World world = player.getWorld();
+            world.spawn(info.getConfirmButton().getLocation(), LightningStrike.class, (bolt) -> {
+                bolt.setVisibleByDefault(false);
+                player.showEntity(plugin, bolt);
+            });
+        }, null);
+
+        // remove other buttons and text displays
+        info.getLeftButton().getScheduler().run(plugin, (task) ->
+            info.getLeftButton().remove()
+        , null);
+        info.getRightButton().getScheduler().run(plugin, (task) ->
+            info.getRightButton().remove()
+        , null);
+        info.getDescription().getScheduler().run(plugin, (task) ->
+            info.getDescription().remove()
+        , null);
+        info.getName().getScheduler().run(plugin, (task) ->
+            info.getName().remove()
+        , null);
+
+        // show title of team name to the player and set team in persistent data
+        int index = info.getTeamIndex();
+        String[] teamText = plugin.getTeamManager().getAllTeamText().get(index);
+        String name = teamText[0];
+        Component title = Component.text(name).color(TextColor.color(Integer.decode(teamText[2])));
+        player.getScheduler().run(plugin, (task) -> {
+            player.showTitle(Title.title(title, Component.empty(), Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ZERO)));
+            plugin.getTeamManager().setTeamName(player, name);
+        }, null);
+
+        // queue the selection
+        player.getScheduler().runDelayed(plugin, (task) -> {
+            player.teleportAsync(plugin.getTeamManager().getTeamSpawnLoc(name));
+            player.setGameMode(GameMode.SURVIVAL);
+            player.removePotionEffect(PotionEffectType.NIGHT_VISION);
+        }, null, 40L);
+
+        // other delayed tasks
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                String text = plugin.getConfig().getString("announcement-format", "").replace("%player%", player.getName()).replace("%team%",'<' + teamText[2] + '>' + teamText[0]);
+                Component msg = MiniMessage.miniMessage().deserialize(text);
+                Bukkit.broadcast(msg);
+                Bukkit.getServer().getOnlinePlayers().forEach(plr -> {
+                    if(!player.getUniqueId().equals(plr.getUniqueId())) {
+                        plr.getScheduler().run(plugin, (task) ->
+                            plr.playSound(plr.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 100f, 1f)
+                        , null);
+                    }
+                });
+                // allow the player to see other players and vice versa
+                for(PlayerInfo info: currentPlayers.values()) {
+                    if(player.getUniqueId() == info.getPlayer().getUniqueId()) {
+                        continue;
+                    }
+                    player.getScheduler().run(plugin, (task) -> player.showPlayer(plugin, info.getPlayer()), null);
+                    player.getScheduler().run(plugin, (task) -> info.getPlayer().showPlayer(plugin, player), null);
+                }
+                // remove confirm button
+                info.getConfirmButton().getScheduler().run(plugin, (task) -> info.getConfirmButton().remove(), null);
+                // remove armor stand
+                info.getStand().getScheduler().run(plugin, (task) -> info.getStand().remove(), null);
+                // remove player from hashmap
+                currentPlayers.remove(player.getUniqueId().toString());
+            }
+        }.runTaskLaterAsynchronously(plugin, 40L);
+    }
+
+    public void handleEarlyPlayerQuit(Player player) {
+        PlayerInfo info = currentPlayers.get(player.getUniqueId().toString());
+        if(info == null) return; // ignore players that we don't have
+
+        // remove entities
+        info.getName().getScheduler().run(plugin, (task) -> info.getName().remove(), null);
+        info.getDescription().getScheduler().run(plugin, (task) -> info.getDescription().remove(), null);
+        info.getLeftButton().getScheduler().run(plugin, (task) -> info.getLeftButton().remove(), null);
+        info.getRightButton().getScheduler().run(plugin, (task) -> info.getRightButton().remove(), null);
+        info.getConfirmButton().getScheduler().run(plugin, (task) -> info.getConfirmButton().remove(), null);
+        info.getStand().getScheduler().run(plugin, (task) -> info.getStand().remove(), null);
+
+        // remove data
+        currentPlayers.remove(player.getUniqueId().toString());
     }
 
     public static class PlayerInfo {
@@ -151,6 +260,7 @@ public class TeamSelector {
         private final ItemDisplay leftButton;
         private final ItemDisplay rightButton;
         private final ItemDisplay confirmButton;
+        private boolean done = false;
 
         public PlayerInfo(Player player, ArmorStand stand, TextDisplay name, TextDisplay description, ItemDisplay leftButton, ItemDisplay rightButton, ItemDisplay confirmButton) {
             this.player = player;
@@ -160,6 +270,14 @@ public class TeamSelector {
             this.leftButton = leftButton;
             this.rightButton = rightButton;
             this.confirmButton = confirmButton;
+        }
+
+        public void setDone() {
+            done = true;
+        }
+
+        public boolean isDone() {
+            return done;
         }
 
         public Player getPlayer() {

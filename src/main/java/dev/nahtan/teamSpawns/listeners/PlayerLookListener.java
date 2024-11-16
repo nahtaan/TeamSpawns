@@ -43,12 +43,16 @@ public class PlayerLookListener implements PacketListener {
         if((yaw <= -31.5 && yaw >= -44) && (pitch <= 24 && pitch >= 10)) {
             info.getLeftButton().getScheduler().run(plugin, (task) -> {
                 info.getLeftButton().setGlowing(true);
-                info.getLeftButton().setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(), new Vector3f(2.3f,2.3f,2.3f), new AxisAngle4f()));
+                if(!plugin.getPlayerClickListener().isAnimatingLeft(player)) {
+                    info.getLeftButton().setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(), new Vector3f(2.3f, 2.3f, 2.3f), new AxisAngle4f()));
+                }
             }, null);
         }else {
             info.getLeftButton().getScheduler().run(plugin, (task) -> {
                 info.getLeftButton().setGlowing(false);
-                info.getLeftButton().setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(), new Vector3f(2,2,2), new AxisAngle4f()));
+                if(!plugin.getPlayerClickListener().isAnimatingLeft(player)) {
+                    info.getLeftButton().setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(), new Vector3f(2, 2, 2), new AxisAngle4f()));
+                }
             }, null);
         }
 
@@ -56,12 +60,16 @@ public class PlayerLookListener implements PacketListener {
         if ((yaw <= 44 && yaw >= 31.5) && (pitch <= 24 && pitch >= 10)) {
             info.getRightButton().getScheduler().run(plugin, (task) -> {
                 info.getRightButton().setGlowing(true);
-                info.getRightButton().setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(), new Vector3f(2.3f,2.3f,2.3f), new AxisAngle4f()));
+                if(!plugin.getPlayerClickListener().isAnimatingRight(player)) {
+                    info.getRightButton().setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(), new Vector3f(2.3f, 2.3f, 2.3f), new AxisAngle4f()));
+                }
             }, null);
         }else {
             info.getRightButton().getScheduler().run(plugin, (task) -> {
                 info.getRightButton().setGlowing(false);
-                info.getRightButton().setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(), new Vector3f(2,2,2), new AxisAngle4f()));
+                if(!plugin.getPlayerClickListener().isAnimatingRight(player)) {
+                    info.getRightButton().setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(), new Vector3f(2, 2, 2), new AxisAngle4f()));
+                }
             }, null);
         }
 

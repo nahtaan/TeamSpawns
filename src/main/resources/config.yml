@@ -1,3 +1,5 @@
+announcement-format: '<gold><bold>%player%</bold> chose to join <white>%team%</white>!'
+first-join-format: '<gold>Welcome %player%!</gold><newline>Use the buttons in front of you to choose your team!<newline><gray>Hint: Punch to use the buttons.'
 teams:
   1:
     name: 'Default'

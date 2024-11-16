@@ -1,13 +1,16 @@
 package dev.nahtan.teamSpawns.data;
 
 import dev.nahtan.teamSpawns.TeamSpawns;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -100,6 +103,14 @@ public class TeamManager {
         return player.getPersistentDataContainer().get(teamNameKey, PersistentDataType.STRING);
     }
 
+    public void setTeamName(Player player, String name) {
+        player.getPersistentDataContainer().set(teamNameKey, PersistentDataType.STRING, name);
+    }
+
+    public void removeTeamName(Player player) {
+        player.getPersistentDataContainer().remove(teamNameKey);
+    }
+
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean doesTeamExist(String teamName) {
         return teams.containsKey(teamName);
@@ -118,6 +129,7 @@ public class TeamManager {
         return new Location(world, info.x, info.y, info.z, info.yaw, info.pitch);
     }
 
+    @SuppressWarnings("unused")
     public String getTeamColourCode(String teamName) {
         if(!doesTeamExist(teamName)) {
             return null;
