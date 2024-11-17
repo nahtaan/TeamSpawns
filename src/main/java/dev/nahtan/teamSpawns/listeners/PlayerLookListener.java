@@ -74,7 +74,7 @@ public class PlayerLookListener implements PacketListener {
         }
 
         // confirm button
-        if ((yaw <= 5 && yaw >= -5) && (pitch <= -2 && pitch >= -13)) {
+        if ((yaw <= 5 && yaw >= -5) && (pitch <= 25 && pitch >= 12)) {
             info.getConfirmButton().getScheduler().run(plugin, (task) -> {
                 info.getConfirmButton().setGlowing(true);
                 info.getConfirmButton().setTransformation(new Transformation(new Vector3f(), new AxisAngle4f(), new Vector3f(1.8f,1.8f,1.8f), new AxisAngle4f()));

@@ -71,27 +71,19 @@ public class TeamSelector {
 
         List<String[]> teamTexts = plugin.getTeamManager().getAllTeamText();
 
-        // Create name
-        TextDisplay nameText = selectionWorld.spawn(standLOC.add(0, 2.5, 5), TextDisplay.class, display -> {
+        // Create component for the text
+        Component text = MiniMessage.miniMessage().deserialize("<" + teamTexts.getFirst()[2] + ">" + teamTexts.getFirst()[0] + "<reset><br><br>" + teamTexts.getFirst()[1]);
+
+        // Create description
+        TextDisplay textEntity = selectionWorld.spawn(standLOC.add(0, 2, 5), TextDisplay.class, display -> {
             display.setVisibleByDefault(false);
             display.setBillboard(Display.Billboard.FIXED);
-            Component text = Component.text(teamTexts.getFirst()[0])
-                    .color(TextColor.color(Integer.decode(teamTexts.getFirst()[2])));
             display.text(text);
             display.setRotation(-180, 0);
         });
 
-        // Create description
-        TextDisplay descriptionText = selectionWorld.spawn(standLOC.add(0, -1, 0), TextDisplay.class, display -> {
-            display.setVisibleByDefault(false);
-            display.setBillboard(Display.Billboard.FIXED);
-            display.text(MiniMessage.miniMessage().deserialize(teamTexts.getFirst()[1]));
-            display.setRotation(-180, 0);
-        });
-
         // show the player the text
-        player.showEntity(plugin, nameText);
-        player.showEntity(plugin, descriptionText);
+        player.showEntity(plugin, textEntity);
 
         // give night vision to the player so that they can see
         player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 1, false, false, false));
@@ -126,7 +118,7 @@ public class TeamSelector {
         // reset standLOC
         standLOC = new Location(selectionWorld, 1000.5, 10, 1000.5);
 
-        ItemDisplay confirmButton = selectionWorld.spawn(standLOC.add(0, 4, 5), ItemDisplay.class, itemDisplay -> {
+        ItemDisplay confirmButton = selectionWorld.spawn(standLOC.add(0, 1.8, 5), ItemDisplay.class, itemDisplay -> {
             itemDisplay.setVisibleByDefault(false);
             itemDisplay.setGravity(false);
             itemDisplay.setInvulnerable(true);
@@ -139,7 +131,7 @@ public class TeamSelector {
         });
         player.showEntity(plugin, confirmButton);
 
-        currentPlayers.put(player.getUniqueId().toString(), new PlayerInfo(player, stand, nameText, descriptionText, leftButton, rightButton, confirmButton));
+        currentPlayers.put(player.getUniqueId().toString(), new PlayerInfo(player, stand, textEntity, leftButton, rightButton, confirmButton));
     }
 
     public PlayerInfo getPlayerInfo(Player player) {
@@ -179,11 +171,8 @@ public class TeamSelector {
         info.getRightButton().getScheduler().run(plugin, (task) ->
             info.getRightButton().remove()
         , null);
-        info.getDescription().getScheduler().run(plugin, (task) ->
-            info.getDescription().remove()
-        , null);
-        info.getName().getScheduler().run(plugin, (task) ->
-            info.getName().remove()
+        info.getText().getScheduler().run(plugin, (task) ->
+            info.getText().remove()
         , null);
 
         // show title of team name to the player and set team in persistent data
@@ -240,8 +229,7 @@ public class TeamSelector {
         if(info == null) return; // ignore players that we don't have
 
         // remove entities
-        info.getName().getScheduler().run(plugin, (task) -> info.getName().remove(), null);
-        info.getDescription().getScheduler().run(plugin, (task) -> info.getDescription().remove(), null);
+        info.getText().getScheduler().run(plugin, (task) -> info.getText().remove(), null);
         info.getLeftButton().getScheduler().run(plugin, (task) -> info.getLeftButton().remove(), null);
         info.getRightButton().getScheduler().run(plugin, (task) -> info.getRightButton().remove(), null);
         info.getConfirmButton().getScheduler().run(plugin, (task) -> info.getConfirmButton().remove(), null);
@@ -255,18 +243,16 @@ public class TeamSelector {
         private final Player player;
         private final ArmorStand stand;
         private int teamIndex = 0;
-        private final TextDisplay name;
-        private final TextDisplay description;
+        private final TextDisplay text;
         private final ItemDisplay leftButton;
         private final ItemDisplay rightButton;
         private final ItemDisplay confirmButton;
         private boolean done = false;
 
-        public PlayerInfo(Player player, ArmorStand stand, TextDisplay name, TextDisplay description, ItemDisplay leftButton, ItemDisplay rightButton, ItemDisplay confirmButton) {
+        public PlayerInfo(Player player, ArmorStand stand, TextDisplay text, ItemDisplay leftButton, ItemDisplay rightButton, ItemDisplay confirmButton) {
             this.player = player;
             this.stand = stand;
-            this.name = name;
-            this.description = description;
+            this.text = text;
             this.leftButton = leftButton;
             this.rightButton = rightButton;
             this.confirmButton = confirmButton;
@@ -288,12 +274,8 @@ public class TeamSelector {
             return stand;
         }
 
-        public TextDisplay getName() {
-            return name;
-        }
-
-        public TextDisplay getDescription() {
-            return description;
+        public TextDisplay getText() {
+            return text;
         }
 
         public void setTeamIndex(int index) {

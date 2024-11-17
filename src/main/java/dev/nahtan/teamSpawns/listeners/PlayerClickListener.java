@@ -3,7 +3,6 @@ package dev.nahtan.teamSpawns.listeners;
 import dev.nahtan.teamSpawns.TeamSpawns;
 import dev.nahtan.teamSpawns.data.TeamSelector;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -59,14 +58,13 @@ public class PlayerClickListener implements Listener {
             info.setTeamIndex(newIndex);
             String[] teamInfo = allTeams.get(newIndex);
 
-            // update text displays
-            info.getName().getScheduler().run(plugin, (task) ->
-                info.getName().text(Component.text(teamInfo[0])
-                        .color(TextColor.color(Integer.decode(teamInfo[2]))))
-            , null);
-            info.getDescription().getScheduler().run(plugin, (task) ->
-                info.getDescription().text(MiniMessage.miniMessage().deserialize(teamInfo[1]))
-            ,null);
+            // Create component for the text
+            Component text = MiniMessage.miniMessage().deserialize("<" + teamInfo[2] + ">" + teamInfo[0] + "<reset><br><br>" + teamInfo[1]);
+
+            // update text display
+            info.getText().getScheduler().run(plugin, (task) ->
+                            info.getText().text(text)
+                    , null);
 
             // apply click animation
             info.getLeftButton().getScheduler().run(plugin, (task) -> {
@@ -98,13 +96,12 @@ public class PlayerClickListener implements Listener {
             info.setTeamIndex(newIndex);
             String[] teamInfo = allTeams.get(newIndex);
 
-            // update text displays
-            info.getName().getScheduler().run(plugin, (task) ->
-                info.getName().text(Component.text(teamInfo[0])
-                        .color(TextColor.color(Integer.decode(teamInfo[2]))))
-            , null);
-            info.getDescription().getScheduler().run(plugin, (task) ->
-                info.getDescription().text(MiniMessage.miniMessage().deserialize(teamInfo[1]))
+            // Create component for the text
+            Component text = MiniMessage.miniMessage().deserialize("<" + teamInfo[2] + ">" + teamInfo[0] + "<reset><br><br>" + teamInfo[1]);
+
+            // update text display
+            info.getText().getScheduler().run(plugin, (task) ->
+                info.getText().text(text)
             , null);
 
             // apply click animation
@@ -118,7 +115,7 @@ public class PlayerClickListener implements Listener {
             }, null, 10);
 
         // confirm button
-        }else if ((yaw <= 5 && yaw >= -5) && (pitch <= -2 && pitch >= -13)) {
+        }else if ((yaw <= 5 && yaw >= -5) && (pitch <= 25 && pitch >= 12)) {
             // set player as being done to avoid the look listener interfering
             plugin.getTeamSelector().makeSelection(player);
         }
