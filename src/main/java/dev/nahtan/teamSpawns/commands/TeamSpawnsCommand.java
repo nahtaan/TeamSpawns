@@ -29,7 +29,6 @@ public class TeamSpawnsCommand extends Command {
             sender.sendMessage(Component.text("Unknown subcommand.").color(TextColor.fromHexString("#ff0000")));
             return false;
         }
-        //noinspection SwitchStatementWithTooFewBranches
         switch (args[0]) {
             case "removeteam" -> {
                 if(args.length < 2) {
@@ -48,6 +47,15 @@ public class TeamSpawnsCommand extends Command {
                 sender.sendMessage(Component.text("Successfully reset player's team.").color(TextColor.fromHexString("#00ff00")));
                 return true;
             }
+            case "reload" -> {
+                plugin.reloadConfig();
+                if(plugin.getTeamManager().loadTeamsFromConfig()) {
+                    sender.sendMessage(Component.text("Successfully reloaded configuration file.").color(TextColor.fromHexString("#00ff00")));
+                }else {
+                    sender.sendMessage(Component.text("Failed to reload config file.").color(TextColor.fromHexString("#ff0000")));
+                }
+                return true;
+            }
         }
         sender.sendMessage(Component.text("Unknown subcommand.").color(TextColor.fromHexString("#ff0000")));
         return false;
@@ -56,7 +64,7 @@ public class TeamSpawnsCommand extends Command {
     @Override
     public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) throws IllegalArgumentException {
         if(args.length == 1) {
-            return List.of("removeteam");
+            return List.of("removeteam", "reload");
         }
         //noinspection SwitchStatementWithTooFewBranches
         switch(args[0]) {

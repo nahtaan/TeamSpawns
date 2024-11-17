@@ -72,7 +72,7 @@ public class TeamSelector {
         List<String[]> teamTexts = plugin.getTeamManager().getAllTeamText();
 
         // Create component for the text
-        Component text = MiniMessage.miniMessage().deserialize("<" + teamTexts.getFirst()[2] + ">" + teamTexts.getFirst()[0] + "<reset><br><br>" + teamTexts.getFirst()[1]);
+        Component text = MiniMessage.miniMessage().deserialize("<b><" + teamTexts.getFirst()[2] + ">" + teamTexts.getFirst()[0] + "</b><reset><br><br>" + teamTexts.getFirst()[1]);
 
         // Create description
         TextDisplay textEntity = selectionWorld.spawn(standLOC.add(0, 2, 5), TextDisplay.class, display -> {

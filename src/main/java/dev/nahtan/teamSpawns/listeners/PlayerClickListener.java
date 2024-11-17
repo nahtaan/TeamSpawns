@@ -59,7 +59,7 @@ public class PlayerClickListener implements Listener {
             String[] teamInfo = allTeams.get(newIndex);
 
             // Create component for the text
-            Component text = MiniMessage.miniMessage().deserialize("<" + teamInfo[2] + ">" + teamInfo[0] + "<reset><br><br>" + teamInfo[1]);
+            Component text = MiniMessage.miniMessage().deserialize("<b><" + teamInfo[2] + ">" + teamInfo[0] + "</b><reset><br><br>" + teamInfo[1]);
 
             // update text display
             info.getText().getScheduler().run(plugin, (task) ->
@@ -97,7 +97,7 @@ public class PlayerClickListener implements Listener {
             String[] teamInfo = allTeams.get(newIndex);
 
             // Create component for the text
-            Component text = MiniMessage.miniMessage().deserialize("<" + teamInfo[2] + ">" + teamInfo[0] + "<reset><br><br>" + teamInfo[1]);
+            Component text = MiniMessage.miniMessage().deserialize("<b><" + teamInfo[2] + ">" + teamInfo[0] + "</b><reset><br><br>" + teamInfo[1]);
 
             // update text display
             info.getText().getScheduler().run(plugin, (task) ->
