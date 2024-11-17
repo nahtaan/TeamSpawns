@@ -88,7 +88,7 @@ public class TeamSelector {
         // give night vision to the player so that they can see
         player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 1, false, false, false));
 
-        standLOC.add(0, -1.5, -0.5); // reset standLOC y value
+        standLOC.add(0, -2, -0.5); // reset standLOC y value
 
         // spawn armor stand buttons
         ItemDisplay leftButton = selectionWorld.spawn(standLOC.add(3.5,1.8,0), ItemDisplay.class, itemDisplay -> {

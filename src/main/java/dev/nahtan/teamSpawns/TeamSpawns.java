@@ -8,6 +8,7 @@ import dev.nahtan.teamSpawns.commands.TeamSpawnsCommand;
 import dev.nahtan.teamSpawns.data.TeamManager;
 import dev.nahtan.teamSpawns.data.TeamSelector;
 import dev.nahtan.teamSpawns.listeners.*;
+import dev.nahtan.teamSpawns.papi.PAPIExpansion;
 import dev.nahtan.teamSpawns.world.VoidBiomeProvider;
 import dev.nahtan.teamSpawns.world.VoidChunkGenerator;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
@@ -39,6 +40,15 @@ public final class TeamSpawns extends JavaPlugin {
     public void onEnable() {
         LOGGER.info("Loading...");
         saveDefaultConfig(); // save config
+
+        // detect PAPI
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            LOGGER.info("PlaceholderAPI has been found! Placeholders will be enabled.");
+            new PAPIExpansion(this).register();
+        }else {
+            LOGGER.warning("PlaceholderAPI was not found! Placeholders will not be enabled.");
+        }
+
         manager = new TeamManager(this);
         if(!manager.loadTeamsFromConfig()) {
             LOGGER.severe("Failed to load configuration file. Plugin effectively disabled.");
