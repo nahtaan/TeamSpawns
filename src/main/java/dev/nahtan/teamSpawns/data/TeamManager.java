@@ -99,6 +99,10 @@ public class TeamManager {
         return valid;
     }
 
+    public List<Location> getAllTeamSpawns() {
+        return teams.values().stream().map(info -> new Location(Bukkit.getWorld(info.world), info.x, info.y, info.z)).toList();
+    }
+
     public String getTeamNameFromPlayer(Player player) {
         return player.getPersistentDataContainer().get(teamNameKey, PersistentDataType.STRING);
     }

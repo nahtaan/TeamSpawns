@@ -65,6 +65,7 @@ public final class TeamSpawns extends JavaPlugin {
         getServer().getPluginManager().registerEvents(playerClickListener, this);
         getServer().getPluginManager().registerEvents(new AdvancementListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
+        getServer().getPluginManager().registerEvents(new BlockListener(this), this);
 
         // register PacketEvents
         PacketEvents.getAPI().getEventManager().registerListener(
