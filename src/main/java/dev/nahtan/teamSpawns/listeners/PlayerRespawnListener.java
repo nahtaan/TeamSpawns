@@ -7,6 +7,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
+import java.util.Set;
+
 public class PlayerRespawnListener implements Listener {
 
     private final TeamSpawns plugin;
@@ -23,6 +25,13 @@ public class PlayerRespawnListener implements Listener {
         if(teamName == null) {
             return;
         }
+
+        // only affect spawn point if player hasn't set their spawn
+        Set<PlayerRespawnEvent.RespawnFlag> flags = event.getRespawnFlags();
+        if(flags.contains(PlayerRespawnEvent.RespawnFlag.BED_SPAWN) || flags.contains(PlayerRespawnEvent.RespawnFlag.ANCHOR_SPAWN)) {
+            return;
+        }
+
         event.setRespawnLocation(plugin.getTeamManager().getTeamSpawnLoc(teamName));
     }
 }

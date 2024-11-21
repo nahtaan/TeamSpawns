@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/IdeaProjects.TeamSpawns.main.iml" filepath="$PROJECT_DIR$/.idea/modules/IdeaProjects.TeamSpawns.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Plugin Dev.TeamSpawns.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Plugin Dev.TeamSpawns.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/TeamSpawns.main.iml" filepath="$PROJECT_DIR$/.idea/modules/TeamSpawns.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/dev.nahtan.TeamSpawns.main.iml" filepath="$PROJECT_DIR$/.idea/modules/dev.nahtan.TeamSpawns.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/untitled.main.iml" filepath="$PROJECT_DIR$/.idea/modules/untitled.main.iml" />
