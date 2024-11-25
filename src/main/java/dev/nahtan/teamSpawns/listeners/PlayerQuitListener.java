@@ -21,6 +21,7 @@ public class PlayerQuitListener implements Listener {
         String teamName = plugin.getTeamManager().getTeamNameFromPlayer(player);
         // ignore players that have a team
         if(teamName != null) {
+            plugin.getTeamManager().removeOnlinePlayer(player);
             return;
         }
 

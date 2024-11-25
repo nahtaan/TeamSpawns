@@ -4,7 +4,9 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
+import dev.nahtan.teamSpawns.commands.TeamChatCommand;
 import dev.nahtan.teamSpawns.commands.TeamSpawnsCommand;
+import dev.nahtan.teamSpawns.data.ChatManager;
 import dev.nahtan.teamSpawns.data.TeamManager;
 import dev.nahtan.teamSpawns.data.TeamSelector;
 import dev.nahtan.teamSpawns.listeners.*;
@@ -26,6 +28,7 @@ public final class TeamSpawns extends JavaPlugin {
     public static Logger LOGGER;
     private TeamManager manager;
     private TeamSelector selector;
+    private ChatManager chatManager;
     PlayerClickListener playerClickListener;
 
     @Override
@@ -55,6 +58,7 @@ public final class TeamSpawns extends JavaPlugin {
             return;
         }
         selector = new TeamSelector(this);
+        chatManager = new ChatManager(this);
 
         // register bukkit events
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
@@ -66,6 +70,7 @@ public final class TeamSpawns extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new AdvancementListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerChatListener(this), this);
 
         // register PacketEvents
         PacketEvents.getAPI().getEventManager().registerListener(
@@ -91,6 +96,7 @@ public final class TeamSpawns extends JavaPlugin {
 
     private void registerCommands() {
         getServer().getCommandMap().register(getName(), new TeamSpawnsCommand(this));
+        getServer().getCommandMap().register(getName(), new TeamChatCommand(this));
     }
 
     public World genVoidWorld() {
@@ -136,6 +142,10 @@ public final class TeamSpawns extends JavaPlugin {
 
     public TeamSelector getTeamSelector() {
         return selector;
+    }
+
+    public ChatManager getChatManager() {
+        return chatManager;
     }
 
     public static ItemStack getSkull(String texture) {

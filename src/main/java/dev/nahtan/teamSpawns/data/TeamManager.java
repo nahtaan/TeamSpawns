@@ -11,10 +11,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 public class TeamManager {
     NamespacedKey teamNameKey;
@@ -23,9 +21,42 @@ public class TeamManager {
     // a mapping of team names to their associated team info
     private final HashMap<String, TeamInfo> teams = new HashMap<>();
 
+    // a mapping of team names to their online players
+    private final HashMap<String, HashSet<Player>> onlineTeams = new HashMap<>();
+
+    // a mapping of player UUIDs to their team name
+    private final HashMap<String, String> playerTeams = new HashMap<>();
+
     public TeamManager(TeamSpawns plugin) {
         this.plugin = plugin;
         teamNameKey = new NamespacedKey(plugin, "team_name");
+    }
+
+    public void addOnlinePlayer(Player player, String teamName) {
+        if(onlineTeams.containsKey(teamName)) {
+            onlineTeams.get(teamName).add(player);
+            playerTeams.put(player.getUniqueId().toString(), teamName);
+            return;
+        }
+        HashSet<Player> set = new HashSet<>();
+        set.add(player);
+        onlineTeams.put(teamName, set);
+        playerTeams.put(player.getUniqueId().toString(), teamName);
+    }
+
+    public void removeOnlinePlayer(Player player) {
+        String teamName = getTeamNameFromPlayer(player);
+        if(!onlineTeams.containsKey(teamName)) {
+            playerTeams.remove(player.getUniqueId().toString());
+            return;
+        }
+        onlineTeams.get(teamName).remove(player);
+        playerTeams.remove(player.getUniqueId().toString());
+    }
+
+    public Set<Player> getOnlinePlayers(String teamName) {
+        if(!onlineTeams.containsKey(teamName)) return Set.of();
+        return onlineTeams.get(teamName);
     }
 
     /**
@@ -104,15 +135,22 @@ public class TeamManager {
     }
 
     public String getTeamNameFromPlayer(Player player) {
+        return playerTeams.get(player.getUniqueId().toString());
+    }
+
+    public String retrieveTeamNameFromPlayer(Player player) {
         return player.getPersistentDataContainer().get(teamNameKey, PersistentDataType.STRING);
     }
 
+
     public void setTeamName(Player player, String name) {
         player.getPersistentDataContainer().set(teamNameKey, PersistentDataType.STRING, name);
+        playerTeams.put(player.getUniqueId().toString(), name);
     }
 
     public void removeTeamName(Player player) {
         player.getPersistentDataContainer().remove(teamNameKey);
+        playerTeams.remove(player.getUniqueId().toString());
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")

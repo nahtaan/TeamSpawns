@@ -1,6 +1,9 @@
 announcement-format: '<gold><bold>%player%</bold> chose to join <white>%team%</white>!'
 first-join-format: '<gold>Welcome %player%!</gold><newline>Use the buttons in front of you to choose your team!<newline><gray>Hint: Punch to use the buttons.'
 spawn-protection-radius: 5
+join-team-chat-msg: '<gold>You are now in the team chat.'
+leave-team-chat-msg: '<red>You are no longer in the team chat.'
+era-chat-format: '<gold>[Team] <white>%name% <gold>-> <white>%message%'
 teams:
   1:
     name: 'Default'

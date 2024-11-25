@@ -18,9 +18,10 @@ public class PlayerJoinListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        String teamName = plugin.getTeamManager().getTeamNameFromPlayer(player);
+        String teamName = plugin.getTeamManager().retrieveTeamNameFromPlayer(player);
         // ignore players that already have a team
         if(teamName != null) {
+            plugin.getTeamManager().addOnlinePlayer(player, teamName);
             return;
         }
 
