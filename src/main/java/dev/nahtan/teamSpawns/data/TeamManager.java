@@ -57,7 +57,6 @@ public class TeamManager {
 
     public void removeOnlinePlayer(Player player) {
         String teamName = getTeamNameFromPlayer(player);
-        callbacks.forEach(callback -> callback.call(player, teamName));
         if(!onlineTeams.containsKey(teamName)) {
             playerTeams.remove(player.getUniqueId().toString());
             return;
@@ -158,6 +157,7 @@ public class TeamManager {
     public void setTeamName(Player player, String name) {
         player.getPersistentDataContainer().set(teamNameKey, PersistentDataType.STRING, name);
         playerTeams.put(player.getUniqueId().toString(), name);
+        callbacks.forEach(callback -> callback.call(player, name));
     }
 
     public void removeTeamName(Player player) {
