@@ -27,25 +27,37 @@ public class TeamManager {
     // a mapping of player UUIDs to their team name
     private final HashMap<String, String> playerTeams = new HashMap<>();
 
+    // list of all TeamChangeCallbacks
+    private final List<TeamChangeCallback> callbacks = new ArrayList<>();
+
+
     public TeamManager(TeamSpawns plugin) {
         this.plugin = plugin;
         teamNameKey = new NamespacedKey(plugin, "team_name");
     }
 
+
+    @SuppressWarnings("unused")
+    public void addCallback(TeamChangeCallback callback) {
+        callbacks.add(callback);
+    }
+
     public void addOnlinePlayer(Player player, String teamName) {
+        playerTeams.put(player.getUniqueId().toString(), teamName);
+        callbacks.forEach(callback -> callback.call(player, teamName));
         if(onlineTeams.containsKey(teamName)) {
             onlineTeams.get(teamName).add(player);
-            playerTeams.put(player.getUniqueId().toString(), teamName);
             return;
         }
         HashSet<Player> set = new HashSet<>();
         set.add(player);
         onlineTeams.put(teamName, set);
-        playerTeams.put(player.getUniqueId().toString(), teamName);
+
     }
 
     public void removeOnlinePlayer(Player player) {
         String teamName = getTeamNameFromPlayer(player);
+        callbacks.forEach(callback -> callback.call(player, teamName));
         if(!onlineTeams.containsKey(teamName)) {
             playerTeams.remove(player.getUniqueId().toString());
             return;
